@@ -1,11 +1,33 @@
 #include "HelperFunctions.h"
 
-void writeInt(byte addr, int data) {
-  byte upper = highByte(data);
-  byte lower = lowByte(data);
+String readFile(String file)
+{
+  File f = SD.open(&file[0]);
+  String output = "";
 
-  EEPROM.write(addr, upper);
-  EEPROM.write(addr + 1, lower);
+  if (f)
+  {
+    while (f.available())
+    {
+      // Read a byte from the file
+      byte c = f.read();
 
-  EEPROM.commit();
+      // If the character is not a Line Feed (LF)
+      // append it to the output string
+      if (c != 13)
+      {
+        // Typecast the byte to a char
+        output += (char) c;  
+      }
+    }
+
+    // Close the file when done
+    f.close();
+
+    return (output);
+  }
+  else
+  {
+    return ("error, file does not exist");
+  }
 }

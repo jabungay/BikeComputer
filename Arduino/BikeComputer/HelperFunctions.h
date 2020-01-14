@@ -1,9 +1,12 @@
 #ifndef DATALOG_H
 #define DATALOG_H
 
-#include <EEPROM.h>
+#include <SPI.h>
+#include <SD.h>
+#include <String.h>
 
-// Write some integer to the EEPROM
-void writeInt(byte addr, int data);
+// Read a file and return the contents
+// as a string
+String readFile(const String file);
 
 #endif
