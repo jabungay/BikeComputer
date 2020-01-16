@@ -5,7 +5,8 @@
 #include "Pins.h"
 
 // Bike parameters that will be retrieved from parameters file
-int wheelDiameter, odometer;
+int wheelDiameter;
+long odometer;
 
 // Bike values that will be calculated
 float wheelCircumference, bikeSpeed;
