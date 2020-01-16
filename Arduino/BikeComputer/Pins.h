@@ -5,12 +5,13 @@
  * The Intel Galileo's built-in SD card reader is connected as follows:
  * MOSI - pin 11
  * MISO - pin 12
- * CLK  - pin 13 
+ * CLK  - pin 13
  * CS   - pin  4
  */
 
 // For hall effect sensor
 #define HALL_SENSOR A0
+#define HALL_THRESHOLD 300
 
 // For serial bluetooth
 #define RX 0

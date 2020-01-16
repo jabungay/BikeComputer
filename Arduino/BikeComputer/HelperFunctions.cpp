@@ -5,6 +5,7 @@ String readFile(String file)
   File f = SD.open(&file[0]);
   String output = "";
 
+  // If the file exists
   if (f)
   {
     while (f.available())
@@ -17,7 +18,7 @@ String readFile(String file)
       if (c != 13)
       {
         // Typecast the byte to a char
-        output += (char) c;  
+        output += (char) c;
       }
     }
 
@@ -28,6 +29,7 @@ String readFile(String file)
   }
   else
   {
+    // If the file does not exist, return an error string
     return ("error, file does not exist");
   }
 }
