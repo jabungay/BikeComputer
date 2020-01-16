@@ -1,6 +1,6 @@
 #include "HelperFunctions.h"
 
-String readFile(String file)
+String ReadFile(String file)
 {
   File f = SD.open(&file[0]);
   String output = "";
@@ -32,4 +32,12 @@ String readFile(String file)
     // If the file does not exist, return an error string
     return ("error, file does not exist");
   }
+}
+
+void AddDataPoint(float speed, long odometer)
+{
+  // Retrieve the csv file
+  String dataFile = getFile("datalog.csv");
+
+
 }

@@ -7,6 +7,9 @@
 
 // Read a file and return the contents
 // as a string
-String readFile(const String file);
+String ReadFile(const String file);
+
+// Function to add a data point to the pre-existing csv file
+void AddDataPoint(float speed, long odometer);
 
 #endif

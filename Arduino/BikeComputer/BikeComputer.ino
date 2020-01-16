@@ -2,7 +2,6 @@
 #include <LiquidCrystal.h>
 // Custom includes
 #include "HelperFunctions.h"
-#include "DataLog.h"
 #include "Pins.h"
 
 // Bike parameters that will be retrieved from parameters file
@@ -31,7 +30,7 @@ void setup()
   Serial1.begin(115200);
 
   // Retrieve wheelDiameter and odometer from parameters.txt
-  String parameterString = readFile("parameters.txt");
+  String parameterString = ReadFile("parameters.txt");
   int newLine   = parameterString.indexOf((char) 10);
   // Assign retrieved values
   wheelDiameter = (parameterString.substring(0, newLine)).toInt();
