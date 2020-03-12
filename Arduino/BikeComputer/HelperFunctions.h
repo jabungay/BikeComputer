@@ -12,4 +12,6 @@ String ReadFile(const String file);
 // Function to add a data point to the pre-existing csv file
 void AddDataPoint(float speed, long odometer);
 
+void SendData(String data);
+
 #endif

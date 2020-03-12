@@ -37,7 +37,14 @@ String ReadFile(String file)
 void AddDataPoint(float speed, long odometer)
 {
   // Retrieve the csv file
-  String dataFile = getFile("datalog.csv");
+  String dataFile = ReadFile("datalog.csv");
 
+  // TODO: append speed and odometer reading as a new line on the CSV file and write it out
+}
 
+// Send a string of data over bluetooth
+void SendData(String data)
+{
+  Serial1.println(data);
+  Serial.print(data);
 }
