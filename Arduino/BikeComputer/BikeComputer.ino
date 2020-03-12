@@ -21,7 +21,6 @@ LiquidCrystal lcd(RS, EN, D4, D5, D6, D7);
 
 void sensorInterrupt()
 {
-    Serial.println("Triggered!");
     odometer += wheelCircumference;
     bikeSpeed = wheelCircumference / timer;
 }
@@ -61,21 +60,17 @@ void setup()
   // Calculate wheelCircumference C = PI * d
   wheelCircumference = PI * wheelDiameter;
 
-  attachInterrupt(2, sensorInterrupt, RISING);
+  attachInterrupt(HALL_SENSOR, sensorInterrupt, RISING);
 
   lcd.clear();
   lcd.setCursor(11,0);
   lcd.print("km");
   lcd.setCursor(11,1);
   lcd.print("km/h");
-
 }
 
 void loop()
 {
-  // Read the hall effect sensor
-  int hallSensorValue = analogRead(HALL_SENSOR);
-  
   // Timer to monitor how long it takes for one revolution
   timer = millis() - timerStart;
 
@@ -92,30 +87,17 @@ void loop()
     lastSpeed = bikeSpeed;
   }
 
+  // Read data from the bluetooth serial port
+  while (Serial1.available() > 0)
+  {
+    String str = Serial.readString();
+    Serial.println(str);
+  }
+
   // Send data over bluetooth every so often
   if (millis() % TRANSMIT_INTERVAL == 0)
   {
     String data = "{'odometer' :" + String(odometer) + ", 'speed' :" + (String)((int)bikeSpeed) + "} \n";
     SendData(data); 
   }
-//
-//  // Execute this if the magnet comes close enough to the sensor
-//  if (hallSensorValue > HALL_THRESHOLD && !triggered)
-//  {
-//    // Flag to ensure that the timer doesn't get reset multiple times in one rotation of the wheel
-//    triggered = true;
-//
-//    // Do the calculations for the speed and the wheelCircumference
-//    odometer += wheelCircumference;
-//    bikeSpeed = wheelCircumference / timer;
-//
-//    // Increment the timerStart value so that the timer restarts from 0
-//    timerStart += timer;
-//  }
-//  // Execute this when the magnet leaves the sensor's proximity
-//  else if (hallSensorValue <= HALL_THRESHOLD && triggered)
-//  {
-//    // Reset the trigger if the magnet is far away and has recently been triggered
-//    triggered = false;
-//  }
 }

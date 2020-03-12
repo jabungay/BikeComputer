@@ -10,8 +10,7 @@
  */
 
 // For hall effect sensor
-#define HALL_SENSOR A0
-#define HALL_THRESHOLD 600
+#define HALL_SENSOR 2
 
 // How often to send data over bluetooth (in ms)
 #define TRANSMIT_INTERVAL 500
