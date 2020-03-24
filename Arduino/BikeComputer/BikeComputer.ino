@@ -22,7 +22,10 @@ LiquidCrystal lcd(RS, EN, D4, D5, D6, D7);
 void sensorInterrupt()
 {
     odometer += wheelCircumference;
-    bikeSpeed = wheelCircumference / timer;
+    bikeSpeed = wheelCircumference / (millis() - timerStart);
+    timerStart = millis();
+    String data = "{'odometer' :" + String(odometer) + ", 'speed' :" + (String)((int)(bikeSpeed * 1000)) + "} \n";
+    SendData(data); 
 }
 
 void setup()
@@ -92,12 +95,5 @@ void loop()
   {
     String str = Serial.readString();
     Serial.println(str);
-  }
-
-  // Send data over bluetooth every so often
-  if (millis() % TRANSMIT_INTERVAL == 0)
-  {
-    String data = "{'odometer' :" + String(odometer) + ", 'speed' :" + (String)((int)bikeSpeed) + "} \n";
-    SendData(data); 
   }
 }

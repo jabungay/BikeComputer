@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">BikeComputer</string>
+    <string name="connect">Connect to Selected Device</string>
+    <string name="change_device">Change Connected Device</string>
+    <string name="speedometer">Speedometer</string>
+    <string name="textview">TextView</string>
+    <string name="odometer">Odometer</string>
+</resources>
