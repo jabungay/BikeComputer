@@ -5,4 +5,6 @@
     <string name="speedometer">Speedometer</string>
     <string name="textview">TextView</string>
     <string name="odometer">Odometer</string>
+    <string name="wheel_diameter_optional">Wheel Diameter (optional)</string>
+    <string name="start">Start</string>
 </resources>

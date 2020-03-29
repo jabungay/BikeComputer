@@ -25,7 +25,10 @@ void sensorInterrupt()
     bikeSpeed = wheelCircumference / (millis() - timerStart);
     timerStart = millis();
     String data = "{'odometer' :" + String(odometer) + ", 'speed' :" + (String)((int)(bikeSpeed * 1000)) + "} \n";
-    SendData(data); 
+    String data2 = "o" + String(odometer);
+    String data3 = "s" + (String)((int)(bikeSpeed * 1000));
+    SendData(data2);
+    SendData(data3); 
 }
 
 void setup()
@@ -93,7 +96,7 @@ void loop()
   // Read data from the bluetooth serial port
   while (Serial1.available() > 0)
   {
-    String str = Serial.readString();
+    String str = Serial1.readString();
     Serial.println(str);
   }
 }

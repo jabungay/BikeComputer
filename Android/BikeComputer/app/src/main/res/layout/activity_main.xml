@@ -20,15 +20,27 @@
 
     <RadioGroup
         android:id="@+id/btList"
-        android:layout_width="337dp"
-        android:layout_height="540dp"
+        android:layout_width="311dp"
+        android:layout_height="466dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="60dp"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="24dp"
+        app:layout_constraintBottom_toTopOf="@+id/wheelDiameter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/wheelDiameter"
+        android:layout_width="363dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="@string/wheel_diameter_optional"
         app:layout_constraintBottom_toTopOf="@+id/connectButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        android:importantForAutofill="no" />
 </androidx.constraintlayout.widget.ConstraintLayout>
