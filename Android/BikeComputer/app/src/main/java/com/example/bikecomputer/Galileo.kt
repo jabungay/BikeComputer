@@ -6,12 +6,20 @@ import android.bluetooth.BluetoothSocket
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
+import android.os.Message
+import android.text.Layout
 import android.util.Log
+import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_galileo.*
+import org.json.JSONObject
+import org.w3c.dom.Text
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
+import java.lang.Exception
 import java.util.*
 
 
@@ -19,11 +27,17 @@ const val MESSAGE_READ: Int = 0
 const val MESSAGE_WRITE: Int = 1
 const val MESSAGE_TOAST: Int = 2
 
+var speedGlobal: Float? = null
+var odoGlobal: Float? = null
+
+
+
 class Galileo : AppCompatActivity() {
 
     val uuid: UUID = UUID.fromString("5acc375a-6e15-11ea-bc55-0242ac130003")
     val bta: BluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
 
+    var macAddr: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,8 +49,6 @@ class Galileo : AppCompatActivity() {
 
         val bundle: Bundle? = intent.extras
 
-        var macAddr: String? = null
-
         if (bundle != null)
         {
             macAddr = bundle.getString("MAC_Address").toString()
@@ -44,28 +56,61 @@ class Galileo : AppCompatActivity() {
 
         val device: BluetoothDevice = bta.getRemoteDevice(macAddr)
 
-        startButton.setOnClickListener { startBT(device) }
+        val han: Handler = object : Handler(Looper.getMainLooper()) {
+
+            override fun handleMessage(msg: Message) {
+                val jsonData = msg.obj as JSONObject
+
+
+                when (msg.what)
+                {
+                    1 -> {
+                        var speed: Float = jsonData.getInt("speed") * 3.6f / 1000.0f
+                        var odometer: Float = jsonData.getInt("odometer") / 1000000.0f
+
+                        println("speed: " + speed.toString())
+                        println("odo: " + odometer.toString())
+
+                        val speedTV: TextView = findViewById(R.id.speedText)
+
+                        speedTV.text = "hi"
+                        speedTV.postInvalidate()
+                          setContentView(R.layout.activity_galileo)
+
+
+                    }
+
+                    else -> super.handleMessage(msg)
+
+                }
+
+            }
+
+        }
+
+
+        startButton.setOnClickListener { startBT(device, han) }
 
     }
 
-    private fun startBT(device: BluetoothDevice)
+    private fun startBT(device: BluetoothDevice, handler: Handler)
     {
-        ConnectBT(device).run()
+        ConnectBT(device, handler).run()
     }
 
-    private inner class ConnectBT(device: BluetoothDevice) : Thread()
+    private inner class ConnectBT(device: BluetoothDevice, private val handler: Handler) : Thread()
     {
-        val clazz = bta.getRemoteDevice("98:D3:32:11:50:96").javaClass
+        val clazz = bta.getRemoteDevice(macAddr).javaClass
         val paramTypes = arrayOf<Class<*>>(Integer.TYPE)
         val m = clazz.getMethod("createRfcommSocket", *paramTypes)
         val params = arrayOf<Any>(Integer.valueOf(1))
 
 
         private val mmSocket: BluetoothSocket? by lazy(LazyThreadSafetyMode.NONE) {
-            m.invoke(bta.getRemoteDevice("98:D3:32:11:50:96"), 1) as BluetoothSocket
+            m.invoke(bta.getRemoteDevice(macAddr), 1) as BluetoothSocket
         }
 
-        public override fun run() {
+        override fun run() {
             // Cancel discovery because it otherwise slows down the connection.
             bta?.cancelDiscovery()
 
@@ -74,7 +119,8 @@ class Galileo : AppCompatActivity() {
                 // until it succeeds or throws an exception.
                 socket.connect()
                 Log.d("BTINIT", "CONNECTED!")
-                MyBluetoothService(Handler()).startThread(mmSocket)
+
+                MyBluetoothService(handler).startThread(mmSocket)
 
             }
         }
@@ -92,17 +138,15 @@ class Galileo : AppCompatActivity() {
 
 }
 
-class MyBluetoothService(
-    // handler that gets info from Bluetooth service
-    private val handler: Handler) {
+class MyBluetoothService(private val handler: Handler) {
+
+
 
     fun startThread(mmSocket: BluetoothSocket?)
     {
         if (mmSocket != null)
         {
             ConnectedThread(mmSocket).run()
-            val bts = "Connected".toByteArray(Charsets.UTF_8)
-            ConnectedThread(mmSocket).write(bts)
         }
     }
 
@@ -115,29 +159,44 @@ class MyBluetoothService(
         override fun run() {
             var numBytes: Int // bytes returned from read()
 
+            var dataStr: String = ""
+
+
             // Keep listening to the InputStream until an exception occurs.
             while (true) {
-                // Read from the InputStream.
-                numBytes = try {
-                    mmInStream.read(mmBuffer)
+                try {
+                    if(mmInStream.available() > 0)
+                    {
+                        var byte: Int = mmInStream.read()
+                        do
+                        {
+                            dataStr += byte.toChar()
+                            byte = mmInStream.read()
+                        } while (byte.toChar() != 'n')
+
+                        if (dataStr.isNotEmpty())
+                        {
+                            var jsonData: JSONObject = JSONObject(dataStr)
+                            var message:Message = Message()
+
+                            message.obj = jsonData
+                            message.what = 1
+
+                            handler.handleMessage(message)
+
+
+
+//                            var speed: Float = jsonData.getInt("speed") * 3.6f / 1000.0f
+//                            var odometer: Float = jsonData.getInt("odometer") / 1000000.0f
+
+                            dataStr = ""
+                        }
+
+                    }
                 } catch (e: IOException) {
                     Log.d("BTINIT", "Input stream was disconnected", e)
                     break
                 }
-
-                for (b in mmBuffer)
-                {
-                    print(b.toChar())
-
-                }
-                println("")
-
-                // Send the obtained bytes to the UI activity.
-                val readMsg = handler.obtainMessage(
-                    MESSAGE_READ, numBytes, -1,
-                    mmBuffer)
-                val bundle = readMsg.data
-                readMsg.sendToTarget()
             }
         }
 

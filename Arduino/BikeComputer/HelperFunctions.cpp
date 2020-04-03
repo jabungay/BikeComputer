@@ -45,6 +45,6 @@ void AddDataPoint(float speed, long odometer)
 // Send a string of data over bluetooth
 void SendData(String data)
 {
-  Serial1.println(data);
+  Serial1.print(data);
   Serial.print(data);
 }

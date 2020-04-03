@@ -29,7 +29,7 @@
         app:layout_constraintTop_toBottomOf="@+id/startButton" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/speedText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
@@ -48,13 +48,13 @@
         android:layout_marginStart="16dp"
         android:text="@string/odometer"
         android:textSize="30sp"
-        app:layout_constraintBottom_toTopOf="@+id/textView4"
+        app:layout_constraintBottom_toTopOf="@+id/odoText"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2"
+        app:layout_constraintTop_toBottomOf="@+id/speedText"
         app:layout_constraintVertical_bias="0.478" />
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/odoText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"

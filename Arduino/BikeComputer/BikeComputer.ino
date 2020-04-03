@@ -24,11 +24,8 @@ void sensorInterrupt()
     odometer += wheelCircumference;
     bikeSpeed = wheelCircumference / (millis() - timerStart);
     timerStart = millis();
-    String data = "{'odometer' :" + String(odometer) + ", 'speed' :" + (String)((int)(bikeSpeed * 1000)) + "} \n";
-    String data2 = "o" + String(odometer);
-    String data3 = "s" + (String)((int)(bikeSpeed * 1000));
-    SendData(data2);
-    SendData(data3); 
+    String data = "{'odometer' :" + String(odometer) + ", 'speed' :" + (String)((int)(bikeSpeed * 1000)) + "}n";
+    SendData(data);
 }
 
 void setup()
